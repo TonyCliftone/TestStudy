@@ -18,3 +18,17 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+//Добавление задач для запуска всех тестов после которых пишем текст что ран с тестами окончен
+
+tasks.register("runAllTests") {
+    dependsOn(tasks.test)
+    finalizedBy("afterTests")
+}
+
+tasks.register("afterTests") {
+    doLast {
+        println("Test run is over")
+    }
+}
+

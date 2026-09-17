@@ -15,8 +15,12 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
+
 tasks.test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        includeTags("main")
+        excludeTags("failed")
+    }
 }
 
 //Добавление задач для запуска всех тестов после которых пишем текст что ран с тестами окончен

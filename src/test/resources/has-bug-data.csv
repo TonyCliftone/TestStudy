@@ -3,3 +3,8 @@
 "Bug",true
 "Bag,Berry",false
 "",false
+"One,Two",false
+"One,Bug",true
+"Bug,Aboba,Neaboba",true
+"Winston",false
+"Notebook,Bug",true

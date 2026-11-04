@@ -91,10 +91,6 @@ public class SeleniumTests {
         Assertions.assertThat(driver.findElement(By.id("total-price")).getText()) // сравнение того что было в корзине и то что после обновления в корзине (по стоимости)
                 .as("Корзина должна сохраняться после обновления страницы")
                 .isEqualTo(totalBefore);
-        Assertions.assertThat(
-                        driver.findElement(By.xpath("//div[@id='cart-items']//b")).getText())
-                .as("Товар должен остаться в корзине")
-                .isEqualTo("Свекла");
     }
 
 

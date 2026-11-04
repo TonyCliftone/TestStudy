@@ -136,13 +136,14 @@ public class SelenideTests {
         cartItemName
                 .as("Название товара в корзине")
                 .shouldHave(text("Свекла"));
+        String totalBefore = totalPrice.getText(); // добавлена фиксация того что было в корзине до обновления (по стоимости)
 
         Selenide.refresh();
         openCartButton.shouldBe(visible).click();
         makeOrderButton.shouldBe(visible);
         totalPrice
-                .as("В корзине отсутствуют товары")
-                .shouldHave(text("0"));
+                .as("Корзина должна сохраняться после обновления страницы")
+                .shouldHave(text(totalBefore)); // сравнение того что было в корзине и то что после обновления в корзине (по стоимости)
     }
 
     @Test

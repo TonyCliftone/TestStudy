@@ -13,9 +13,15 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:6.0.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // Source: https://mvnrepository.com/artifact/org.assertj/assertj-core
+    testImplementation("org.assertj:assertj-core:3.27.7")
 
     // Source: https://mvnrepository.com/artifact/io.rest-assured/rest-assured
     implementation("io.rest-assured:rest-assured:5.5.6")
+    // Source: https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+    implementation("org.seleniumhq.selenium:selenium-java:4.40.0")
+    // Source: https://mvnrepository.com/artifact/com.codeborne/selenide
+    implementation("com.codeborne:selenide:7.16.0")
 }
 
 

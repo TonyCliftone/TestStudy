@@ -1,3 +1,4 @@
+import config.TestConfig;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
@@ -17,8 +18,8 @@ public class SeleniumTests {
     @BeforeEach
             void setup(){
         driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(3));
-        driver.get("http://localhost:8080");
+        wait = new WebDriverWait(driver, Duration.ofMillis(TestConfig.ELEMENT_TIMEOUT));
+        driver.get(TestConfig.STAND_URL);
 
     }
 
@@ -35,29 +36,29 @@ public class SeleniumTests {
     @Tag("main")
     void checkAddGoodAndVisibleTest(){
         driver.findElement(By.xpath("//*[@href='/admin']")).click();
-        driver.findElement(By.xpath("//*[@id='username']")).sendKeys("admin");
-        driver.findElement(By.xpath("//*[@id='password']")).sendKeys("secret123");
+        driver.findElement(By.xpath("//*[@id='username']")).sendKeys(TestConfig.ADMIN_USERNAME);
+        driver.findElement(By.xpath("//*[@id='password']")).sendKeys(TestConfig.ADMIN_PASSWORD);
         driver.findElement(By.xpath("//*[@class='primary']")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='n-name']")));
-        driver.findElement(By.xpath("//*[@id='n-name']")).sendKeys("Свекла");
-        driver.findElement(By.xpath("//*[@id='n-price']")).sendKeys("150");
+        driver.findElement(By.xpath("//*[@id='n-name']")).sendKeys(TestConfig.START_PRODUCT_NAME);
+        driver.findElement(By.xpath("//*[@id='n-price']")).sendKeys(TestConfig.START_PRODUCT_PRICE);
         driver.findElement(By.xpath("//*[@id='add-btn']")).click();
         driver.findElement(By.xpath("//*[@href='/']")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(@class, \"product-card\") and @data-name=\"Свекла\"]")));
-        Assertions.assertThat(driver.findElement(By.xpath("//*[contains(@class, \"product-card\") and @data-name=\"Свекла\"]")).getAttribute("data-name"))
-                .as("В списке товаров есть Свекла")
-                .isEqualTo("Свекла");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(@class, \"product-card\") and @data-name=\"" + TestConfig.START_PRODUCT_NAME + "\"]")));
+        Assertions.assertThat(driver.findElement(By.xpath("//*[contains(@class, \"product-card\") and @data-name=\"" + TestConfig.START_PRODUCT_NAME + "\"]")).getAttribute("data-name"))
+                .as("В списке товаров есть " + TestConfig.START_PRODUCT_NAME)
+                .isEqualTo(TestConfig.START_PRODUCT_NAME);
     }
 
     @Test
     @Tag("main")
     void checkAddGoodInCartTest(){
-        driver.findElement(By.xpath("//*[(@data-action='add-to-cart') and @data-name=\"Свекла\"]")).click();
+        driver.findElement(By.xpath("//*[(@data-action='add-to-cart') and @data-name=\"" + TestConfig.START_PRODUCT_NAME + "\"]")).click();
         driver.findElement(By.xpath("//button[@id=\"open-cart-btn\"]")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='makeOrder']")));
         Assertions.assertThat(driver.findElement(By.tagName("b")).getText())
                 .as("Название товара в корзине")
-                .isEqualTo("Свекла");
+                .isEqualTo(TestConfig.START_PRODUCT_NAME);
     }
 
     @Test
@@ -76,12 +77,12 @@ public class SeleniumTests {
     @Test
     @Tag("main")
     void checkCartAfterRefreshTest(){
-        driver.findElement(By.xpath("//*[(@data-action='add-to-cart') and @data-name=\"Свекла\"]")).click();
+        driver.findElement(By.xpath("//*[(@data-action='add-to-cart') and @data-name=\"" + TestConfig.START_PRODUCT_NAME + "\"]")).click();
         driver.findElement(By.xpath("//button[@id=\"open-cart-btn\"]")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='makeOrder']")));
         Assertions.assertThat(driver.findElement(By.tagName("b")).getText())
                 .as("Название товара в корзине")
-                .isEqualTo("Свекла");
+                .isEqualTo(TestConfig.START_PRODUCT_NAME);
         String totalBefore = driver.findElement(By.id("total-price")).getText(); // добавлена фиксация того что было в корзине до обновления (по стоимости)
         driver.navigate().refresh();
         wait.until(ExpectedConditions.visibilityOfElementLocated(

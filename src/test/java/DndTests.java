@@ -2,6 +2,7 @@ import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.DragAndDropOptions;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import config.TestConfig;
 import org.junit.jupiter.api.*;
 
 import java.util.Objects;
@@ -14,10 +15,10 @@ import static org.assertj.core.api.Assertions.within;
 public class DndTests {
 
 
-    SelenideElement sveklaProductCard = $x("//*[contains(@class, 'product-card') and @data-name='Свекла']");
+    SelenideElement sveklaProductCard = $x("//*[contains(@class, 'product-card') and @data-name='" + TestConfig.START_PRODUCT_NAME + "']");
 
     // Корзина
-    SelenideElement addSveklaToCartButton = $x("//*[(@data-action='add-to-cart') and @data-name='Свекла']");
+    SelenideElement addSveklaToCartButton = $x("//*[(@data-action='add-to-cart') and @data-name='" + TestConfig.START_PRODUCT_NAME + "']");
     SelenideElement openCartButton = $x("//*[@id='open-cart-btn']");
     SelenideElement cartCount = $x("//*[@id='cart-count']");
     SelenideElement makeOrderButton = $x("//*[@id='makeOrder']");
@@ -29,8 +30,8 @@ public class DndTests {
 
     @BeforeEach
     void setup() {
-        Configuration.timeout = 3000;
-        open("http://localhost:8080");
+        Configuration.timeout = TestConfig.ELEMENT_TIMEOUT;
+        open(TestConfig.STAND_URL);
     }
 
     @Test
@@ -50,8 +51,8 @@ public class DndTests {
         makeOrderButton.shouldBe(visible);
 
         cartItemName
-                .as("Свекла должна появиться в корзине после Drag-and-Drop")
-                .shouldHave(text("Свекла"));
+                .as(TestConfig.START_PRODUCT_NAME + " должна появиться в корзине после Drag-and-Drop")
+                .shouldHave(text(TestConfig.START_PRODUCT_NAME));
 
         assertThat(Double.parseDouble(totalPrice.getText()))
                 .as("Сумма корзины должна равняться цене Свеклы")
@@ -68,8 +69,8 @@ public class DndTests {
         makeOrderButton.shouldBe(visible);
 
         cartItemName
-                .as("Свекла должна быть добавлена в корзину")
-                .shouldHave(text("Свекла"));
+                .as(TestConfig.START_PRODUCT_NAME + " должна быть добавлена в корзину")
+                .shouldHave(text(TestConfig.START_PRODUCT_NAME));
 
         removeFromCartButton.click();
 

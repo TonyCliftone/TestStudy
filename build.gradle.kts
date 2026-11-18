@@ -30,6 +30,9 @@ tasks.test {
         includeTags("main")
         excludeTags("failed")
     }
+    testLogging {
+        showStandardStreams = true
+    }
 }
 
 //Добавление задач для запуска всех тестов после которых пишем текст что ран с тестами окончен
@@ -54,4 +57,8 @@ tasks.register<Test>("apiTest") {
 
     testClassesDirs = sourceSets["test"].output.classesDirs
     classpath = sourceSets["test"].runtimeClasspath
+
+    testLogging {
+        showStandardStreams = true
+    }
 }

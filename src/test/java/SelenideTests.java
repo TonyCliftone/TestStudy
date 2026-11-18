@@ -1,5 +1,6 @@
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
+import config.TestConfig;
 import com.codeborne.selenide.SelenideElement;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
@@ -35,10 +36,10 @@ public class SelenideTests {
     SelenideElement goodPriceInput = $x("//*[@id='n-price']");
     SelenideElement addGoodButton = $x("//*[@id='add-btn']");
     SelenideElement homeLink = $x("//*[@href='/']");
-    SelenideElement sveklaProductCard = $x("//*[contains(@class, 'product-card') and @data-name='Свекла']");
+    SelenideElement sveklaProductCard = $x("//*[contains(@class, 'product-card') and @data-name='" + TestConfig.START_PRODUCT_NAME + "']");
 
     // Корзина
-    SelenideElement addSveklaToCartButton = $x("//*[(@data-action='add-to-cart') and @data-name='Свекла']");
+    SelenideElement addSveklaToCartButton = $x("//*[(@data-action='add-to-cart') and @data-name='" + TestConfig.START_PRODUCT_NAME + "']");
     SelenideElement addSirokToCartButton = $x("//*[(@data-action='add-to-cart') and @data-name='сырок']");
     SelenideElement addGranatToCartButton = $x("//*[(@data-action='add-to-cart') and @data-name='гранат']");
     SelenideElement openCartButton = $x("//*[@id='open-cart-btn']");
@@ -64,12 +65,12 @@ public class SelenideTests {
 
     @BeforeEach
     void setup() {
-        Configuration.timeout = 3000;
-        open("http://localhost:8080");
+        Configuration.timeout = TestConfig.ELEMENT_TIMEOUT;
+        open(TestConfig.STAND_URL);
     }
 
     private final RequestSpecification basicRQ = new RequestSpecBuilder()
-            .setBaseUri("http://localhost:8080")
+            .setBaseUri(TestConfig.API_URL)
             .log(LogDetail.ALL)
             .addQueryParam("page", 0)
             .addQueryParam("size", "10000")
@@ -90,17 +91,17 @@ public class SelenideTests {
     @Tag("main")
     void checkAddGoodAndVisibleTest() {
         adminLink.click();
-        usernameInput.setValue("admin");
-        passwordInput.setValue("secret123");
+        usernameInput.setValue(TestConfig.ADMIN_USERNAME);
+        passwordInput.setValue(TestConfig.ADMIN_PASSWORD);
         signInButton.click();
-        goodNameInput.shouldBe(visible).setValue("Свекла");
-        goodPriceInput.setValue("150");
+        goodNameInput.shouldBe(visible).setValue(TestConfig.START_PRODUCT_NAME);
+        goodPriceInput.setValue(TestConfig.START_PRODUCT_PRICE);
         addGoodButton.click();
         homeLink.click();
         sveklaProductCard
                 .shouldBe(visible)
-                .as("В списке товаров есть Свекла")
-                .shouldHave(attribute("data-name", "Свекла"));
+                .as("В списке товаров есть " + TestConfig.START_PRODUCT_NAME)
+                .shouldHave(attribute("data-name", TestConfig.START_PRODUCT_NAME));
     }
 
     @Test
@@ -111,7 +112,7 @@ public class SelenideTests {
         makeOrderButton.shouldBe(visible);
         cartItemName
                 .as("Название товара в корзине")
-                .shouldHave(text("Свекла"));
+                .shouldHave(text(TestConfig.START_PRODUCT_NAME));
     }
 
     @Test
@@ -135,7 +136,7 @@ public class SelenideTests {
         makeOrderButton.shouldBe(visible);
         cartItemName
                 .as("Название товара в корзине")
-                .shouldHave(text("Свекла"));
+                .shouldHave(text(TestConfig.START_PRODUCT_NAME));
         String totalBefore = totalPrice.getText(); // добавлена фиксация того что было в корзине до обновления (по стоимости)
 
         Selenide.refresh();
@@ -176,7 +177,7 @@ public class SelenideTests {
         createdGoodId = given()
                 .spec(basicRQ)
                 .auth()
-                .basic("admin", "secret123")
+                .basic(TestConfig.ADMIN_USERNAME, TestConfig.ADMIN_PASSWORD)
                 .contentType(ContentType.JSON)
                 .body(jsonBody)
                 .when()
@@ -213,7 +214,7 @@ public class SelenideTests {
         createdGoodId = given()
                 .spec(basicRQ)
                 .auth()
-                .basic("admin", "secret123")
+                .basic(TestConfig.ADMIN_USERNAME, TestConfig.ADMIN_PASSWORD)
                 .contentType(ContentType.JSON)
                 .body(jsonBody)
                 .when()
@@ -252,8 +253,8 @@ public class SelenideTests {
     @Tag("main")
     void checkAddGoodNotificationInAdminTest() {
         adminLink.click();
-        usernameInput.setValue("admin");
-        passwordInput.setValue("secret123");
+        usernameInput.setValue(TestConfig.ADMIN_USERNAME);
+        passwordInput.setValue(TestConfig.ADMIN_PASSWORD);
         signInButton.click();
 
         goodNameInput.shouldBe(visible).setValue("Товар из админки");
@@ -269,8 +270,8 @@ public class SelenideTests {
     @Tag("main")
     void checkEditGoodInAdminTest() {
         adminLink.click();
-        usernameInput.setValue("admin");
-        passwordInput.setValue("secret123");
+        usernameInput.setValue(TestConfig.ADMIN_USERNAME);
+        passwordInput.setValue(TestConfig.ADMIN_PASSWORD);
         signInButton.click();
 
         // создаём помидор
@@ -312,7 +313,7 @@ public class SelenideTests {
                 given()
                         .spec(basicRQ)
                         .auth()
-                        .basic("admin", "secret123")
+                        .basic(TestConfig.ADMIN_USERNAME, TestConfig.ADMIN_PASSWORD)
                         .delete("/goods/{id}", createdGoodId)
                         .then()
                         .statusCode(200);
